@@ -7,8 +7,13 @@ package com.mycompagny.execution;
 
 
 
+        import java.io.*;
+        import java.nio.file.Files;
+        import java.nio.file.Paths;
+        import java.util.ArrayList;
         import java.util.Arrays;
         import java.util.List;
+        import java.util.stream.Collectors;
         import java.util.stream.IntStream;
         import java.util.stream.Stream;
 
@@ -20,7 +25,11 @@ public class Execution001
         execution.doWork1();
         execution.doWork2();
         execution.doWork3();
-        execution.doWork4();
+        try {
+            execution.doWork4();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         execution.doWork5();
         execution.doWork6();
         execution.doWork7();
@@ -49,6 +58,7 @@ public class Execution001
      *  e.g. in the above example no lambda expression depends on any mutable variables or states from the outer scope which might change during execution.
      */
     void doWork1() {
+        System.out.println("doWork1");
         List<String> myList =
                 Arrays.asList("a1", "a2", "b1", "c2", "c1");
 
@@ -68,9 +78,15 @@ public class Execution001
      * ==> Just use Stream.of() to create a stream from a bunch of object references.
      */
     void doWork2(){
+        System.out.println("doWork2");
         Stream.of("a1", "a2", "a3")
                 .findFirst()
                 .ifPresent(System.out::println);  // a1
+
+        Stream.of(3,2,1)
+                .sorted()
+                .findFirst()
+                .ifPresent(System.out::println);  // ?
     }
 
 
@@ -88,6 +104,7 @@ public class Execution001
      *
      */
     void doWork3(){
+        System.out.println("doWork3");
         IntStream.range(1, 4)
                 .forEach(System.out::println);
 
@@ -118,21 +135,81 @@ public class Execution001
 
     }
 
-    void doWork4(){
+    void doWork4() throws IOException {
+        System.out.println("doWork4 read file as a stream");
 
+        //create file
+        File f = new File("W://fileTOstream.txt");
+        BufferedWriter bufferedWriter = null;
+
+        try {
+            bufferedWriter = new BufferedWriter(new FileWriter(f));
+            bufferedWriter.write("line1"+"\n");
+            bufferedWriter.write("line2"+"\n");
+            bufferedWriter.write("line3"+"\n");
+            bufferedWriter.write("line4"+"\n");
+            bufferedWriter.write("line5"+"\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            bufferedWriter.close();
+        }
+        String fileName = "W://fileTOstream.txt";
+        List<String> list = new ArrayList<>();
+
+        try (Stream<String> stream = Files.lines(Paths.get(fileName))) {
+
+            //1. filter line 3
+            //2. convert all content to upper case
+            //3. convert it into a List
+            list = stream
+                    .filter(line -> !line.startsWith("line3"))
+                    .map(String::toUpperCase)
+                    .collect(Collectors.toList());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        list.forEach(System.out::println);
     }
 
     void doWork5(){
 
+        System.out.println("doWork5 palindrome");
+            String str = "kayak";
+            //String str = "bla";
+
+            StringBuilder input1 = new StringBuilder();
+            StringBuilder output1;
+
+            // append a string into StringBuilder input1
+            input1.append(str);
+
+            // reverse StringBuilder input1
+            output1 = input1.reverse();
+
+            System.out.println(input1);
+            System.out.println(output1);
+
+            if ( (output1.toString().equalsIgnoreCase(str)) )
+            {
+                System.out.println("true");
+            } else {
+                System.out.println("false");
+            }
+
+
+
     }
 
     void doWork6(){
-
+        System.out.println("doWork6");
 
     }
 
     void doWork7(){
-
+        System.out.println("doWork7");
 
     }
 
