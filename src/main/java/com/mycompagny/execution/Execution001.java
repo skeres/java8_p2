@@ -7,6 +7,8 @@ package com.mycompagny.execution;
 
 
 
+        import com.mycompagny.interfaces.Instrument;
+
         import java.io.*;
         import java.nio.file.Files;
         import java.nio.file.Paths;
@@ -139,7 +141,7 @@ public class Execution001
         System.out.println("doWork4 read file as a stream");
 
         //create file
-        File f = new File("W://fileTOstream.txt");
+        File f = new File(".//fileTOstream.txt");
         BufferedWriter bufferedWriter = null;
 
         try {
@@ -154,7 +156,7 @@ public class Execution001
         } finally {
             bufferedWriter.close();
         }
-        String fileName = "W://fileTOstream.txt";
+        String fileName = ".//fileTOstream.txt";
         List<String> list = new ArrayList<>();
 
         try (Stream<String> stream = Files.lines(Paths.get(fileName))) {
@@ -203,8 +205,33 @@ public class Execution001
 
     }
 
+
     void doWork6(){
-        System.out.println("doWork6");
+        System.out.println("doWork6 lambda expressions");
+
+
+        //coding the old way : here we must describe Saxophone classs to be used in the old way without lambda
+        class Saxophone implements Instrument {
+            @Override
+            public String jouerMorceauMusique(String morceau, int dureeDecoute) {
+                System.out.println("oldWay : lancement de "+morceau+ " pour une durée de "+dureeDecoute);
+                return "fin de lecture pour "+morceau;
+            }
+        }
+        //old way
+        Instrument instrument;
+        instrument = new Saxophone();
+        System.out.println(instrument.jouerMorceauMusique("mozart", 22));
+
+
+
+        // ---------> coding the new way : 5 lines of code !
+        Instrument instrumentNew= (morceau,dureeDecoute) -> {
+            System.out.println("NewWay : lancement de "+morceau+ " pour une durée de "+dureeDecoute);
+            return "fin de lecture pour "+morceau;
+        };
+        System.out.println(instrumentNew.jouerMorceauMusique("beethoven", 43));
+
 
     }
 
