@@ -7,35 +7,40 @@ package com.mycompagny.execution;
 
 
 
-        import com.mycompagny.interfaces.Instrument;
+import com.mycompagny.interfaces.Instrument;
+import com.mycompagny.utils.CommonService;
+import com.mycompagny.utils.LocalDateTimeRange;
+import com.mycompagny.utils.MyBigDecimal;
 
-        import java.io.*;
-        import java.nio.file.Files;
-        import java.nio.file.Paths;
-        import java.util.*;
-        import java.util.function.Consumer;
-        import java.util.function.Function;
-        import java.util.function.Predicate;
-        import java.util.stream.Collectors;
-        import java.util.stream.IntStream;
-        import java.util.stream.Stream;
+import java.io.*;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
-public class Execution001 {
+public class Execution001
+{
 
-    public class Toto {
-
-        public Toto() {
-            System.out.println("in Toto constructor");
-        }
+    public class Test {
+        Boolean aBooleanObject;
+        boolean aBooleanPrimitive;
     }
-
-    public interface Calcul {
-        public int mutlitplyByX( int x);
+    public static class BooleanHolder {
+        public Boolean valeur;
     }
-
-
-
-
+    public static class BooleanWrapper {
+        public boolean valeurWrapper;
+    }
     public static void main(String args[]) {
         System.out.println("hello world");
         Execution001 execution = new Execution001();
@@ -50,34 +55,252 @@ public class Execution001 {
         execution.doWork5();
         execution.doWork6();
         execution.doWork7();
-        execution.doWork8();
-        execution.doWorkBidon();
-        execution.doWorkBidon2();
-        execution.doWorkBidon3();
-        execution.doWorkBidon4();
-        execution.doWorkBidon5();
+
+        execution.doWork9();
+        execution.doWork10();
+        execution.doWork11();
+        execution.doWork12();
+
+        boolean one = false;
+        Boolean TWO = false;
+        BooleanHolder b= new BooleanHolder();
+        System.out.println("BooleanHolder avant set ="+b.valeur);
+        b.valeur=false;
+        BooleanWrapper z= new BooleanWrapper();
+        System.out.println("BooleanWrapper avant set ="+z.valeurWrapper);
+        z.valeurWrapper=false;
+        execution.doWork14(one, TWO, b, z);
+        System.out.println("one="+one);
+        System.out.println("TWO="+TWO);
+        System.out.println("b="+b.valeur);
+        System.out.println("z="+z.valeurWrapper);
+
+        String a="a";
+        StringBuilder sb= new StringBuilder("sb");
+        execution.doWork15(a,sb);
+        System.out.println("a="+a);
+        System.out.println("sb="+sb);
+
+        boolean r=false;
+        execution.doWork16(r);
+        System.out.println("r="+r);
+
+        execution.doWork17();
+        execution.doWork18();
+        execution.doWork19();
+        execution.doWork20();
+        execution.doWork21();
+    }
+
+    void doWork21() {
+        int a=7;
+        if (a !=7 ) {
+            System.out.println("pas 7");
+        } else {
+            System.out.println("c'est 7");
+        }
+    }
+    void doWork20() {
+        LocalDateTime ldt1 = LocalDateTime.of(2022,9,1,12,00);
+        LocalDateTime ldt2 = LocalDateTime.of(2022,9,1,17,00);
+
+        System.out.println("ldt1="+ldt1);
+
+        System.out.println("ldt2 is after ldt1="+ldt2.isAfter(ldt1));
+        System.out.println("ldt1 is after ldt1="+ldt1.isAfter(ldt1));
+        System.out.println("ldt1 is equal ldt1="+ldt1.isEqual(ldt1));
+        System.out.println("ldt2 compareTo ldt1="+ldt2.compareTo(ldt1));
+        System.out.println("ldt1 compareTo ldt2="+ldt1.compareTo(ldt2));
+        System.out.println("ldt1 compareTo ldt1="+ldt1.compareTo(ldt1));
+
+    }
+    void doWork19() {
+        Test t = new Test();
+
+        System.out.println("aBooleanObject init="+t.aBooleanObject);
+        System.out.println("aBooleanPrimitive init="+t.aBooleanPrimitive);
+    }
+
+    void doWork18() {
+        MyBigDecimal init = new MyBigDecimal();
+        System.out.println("init="+init.valeur);
+        BigDecimal bd= new BigDecimal(37);
+        BigDecimal pvei= new BigDecimal(7);
+        System.out.println("bd="+bd+" pvei=2 : "+ bd.divide(pvei,3, RoundingMode.HALF_UP));
+    }
+    void doWork17() {
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        String myDateDepart = "2021-12-14 10:39";
+        LocalDateTime ldtDepart=LocalDateTime.parse(myDateDepart,dateTimeFormatter);
+        System.out.println("myDateDepart="+ldtDepart);
+
+        String myDateArrivee = "2021-12-14 11:52";
+        LocalDateTime ldtArrivee=LocalDateTime.parse(myDateArrivee,dateTimeFormatter);
+        System.out.println("myDateArrivee="+myDateArrivee);
+
+        LocalDateTimeRange r1=LocalDateTimeRange.ofLocalTime(ldtDepart.toLocalTime(), ldtArrivee.toLocalTime());
+        System.out.println("plageTSVP depart="+r1.getDepart());
+        System.out.println("plageTSVP fin="+r1.getFin());
+
+        LocalTime debutPlage=LocalTime.of(11,00);;
+        LocalTime finPlage=LocalTime.of(15,00);;
+
+        CommonService commonService=new CommonService();
+        Long l=commonService.intersection(r1, debutPlage, finPlage);
+
+        System.out.println("l="+l);
 
     }
 
-    public void doWorkBidon5(){
-        System.out.println("méthode 3 qui ne fait rien, pour test");
+    void doWork16(boolean zzb) {
+        zzb=true;
     }
 
-    public void doWorkBidon4(){
-        System.out.println("méthode 3 qui ne fait rien, pour test");
+    void doWork15(String x, StringBuilder y) {
+        x="aa";
+        y.append("sb");
     }
 
-    public void doWorkBidon3(){
-        System.out.println("méthode 3 qui ne fait rien, pour test");
+    void doWork14(boolean un, Boolean DEUX, BooleanHolder bh, BooleanWrapper truc) {
+        un=true;
+        DEUX=true;
+        bh.valeur=true;
+        truc.valeurWrapper=true;
     }
 
-    public void doWorkBidon2(){
-        System.out.println("méthode 2 qui ne fait rien, pour test");
+    void doWork12() {
+        List<Integer> list = new ArrayList<>();
+        list.add(202201);
+        list.add(202202);
+        list.add(202204);
+        list.add(202203);
+
+        List<Integer> listSorted = list.stream().sorted((
+                (t1,t2) -> {
+                    if (t1.compareTo(t2) == 0) {
+                        System.out.println(t1.toString() +" | "+ t2.toString() + " t1.compareTo(t2)=0"+(t1.compareTo(t2) == 0));
+                        return 0;
+                    }
+                    if (t1.compareTo(t2) == 1) {
+                        System.out.println(t1.toString() +" | "+ t2.toString() + " t1.compareTo(t2)=1"+(t1.compareTo(t2) == 1));
+                        return 1;
+                    } else {
+                        System.out.println(t1.toString() +" | "+ t2.toString() + " t1.compareTo(t2)=-1"+(t1.compareTo(t2) == 1));
+                        return -1;
+                    }
+                }
+        )).collect(Collectors.toList());
+        listSorted.stream().forEach(System.out::println);
+
     }
 
-    public void doWorkBidon(){
-        System.out.println("méthode 1 qui ne fait rien, pour test");
+    void doWork11() {
+        List<String> list = new ArrayList<>();
+        list.add("202201");
+        list.add("202202");
+        list.add("202204");
+        list.add("202203");
+
+        List<String> listSorted = list.stream().sorted((
+                (t1,t2) -> {
+                    int c=t1.compareTo(t2);
+                    /*
+                    if (t1.compareTo(t2) == 0) {
+                        System.out.println(t1.toString() +" | "+ t2.toString() + " t1.compareTo(t2)=0 "+(t1.compareTo(t2) == 0));
+                        return 0;
+                    }
+                    if (t1.compareTo(t2) == 1) {
+                        System.out.println(t1.toString() +" | "+ t2.toString() + " t1.compareTo(t2)=1 "+(t1.compareTo(t2) == 1));
+                        return 1;
+                    } else {
+                        System.out.println(t1.toString() +" | "+ t2.toString() + " t1.compareTo(t2)=-1 "+(t1.compareTo(t2) == -1));
+                        return -1;
+                    }
+                    */
+                    return c;
+                }
+                )).collect(Collectors.toList());
+        listSorted.stream().forEach(System.out::println);
+
     }
+
+    void doWork10(){
+        List<Integer> list = new ArrayList<>();
+        list.add(1);
+        list.add(2);
+        list.add(4);
+        list.add(4);
+        boolean resultAnd = list.stream().map(e-> e.compareTo(4) == 0).reduce(Boolean::logicalAnd).orElse(false);
+        boolean resultOr = list.stream().map(e-> e.compareTo(4) == 0).reduce(Boolean::logicalOr).orElse(false);
+
+        System.out.println("resultAnd="+resultAnd);
+        System.out.println("resultOr="+resultOr);
+    }
+    void doWork9() {
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        String myDateDepart = "2021-12-14 10:30";
+        LocalDateTime ldtDepart=LocalDateTime.parse(myDateDepart,dateTimeFormatter);
+        System.out.println("myDateDepart="+ldtDepart);
+
+        LocalDateTime date01Minuit = LocalDate.of(ldtDepart
+                                .plusDays(1)
+                                .getYear(),
+                        1,
+                        1)
+                .atStartOfDay();
+        System.out.println("date01Minuit="+date01Minuit);
+
+        String myDateArrivee = "2021-12-16 08:30";
+        LocalDateTime ldtArrivee=LocalDateTime.parse(myDateArrivee,dateTimeFormatter);
+        System.out.println("myDateArrivee="+myDateArrivee);
+
+        if (myDateArrivee.compareTo(myDateDepart) >= 0) {
+            System.out.println(myDateArrivee +" est plus grande que " + myDateDepart);
+        } else {
+            System.out.println(myDateArrivee +" est plus petite que " + myDateDepart);
+        }
+
+        LocalDateTimeRange plageTSVP=LocalDateTimeRange.ofLocalTime(ldtDepart.toLocalTime(), ldtArrivee.toLocalTime());
+        System.out.println("plageTSVP depart="+plageTSVP.getDepart());
+        System.out.println("plageTSVP fin="+plageTSVP.getFin());
+
+
+        LocalDateTimeRange ldtr= LocalDateTimeRange.of(ldtDepart,ldtArrivee);
+        LocalDateTime inDep=LocalDateTime.parse("2021-12-14 00:00",dateTimeFormatter);
+        LocalDateTime inArr=LocalDateTime.parse("2021-12-14 01:30",dateTimeFormatter);
+        LocalDateTimeRange in= LocalDateTimeRange.of(inDep,inArr);
+        LocalDateTimeRange intersection=ldtr.intersection(in);
+        System.out.println("intersection="+intersection.getDepart() + "/"+intersection.getFin());
+
+
+        //test getLocalDateTimeFromLocalTime obtention d'un intervalle d'après des heures
+        LocalTime debut=LocalTime.of(12,30);
+        LocalTime fin=LocalTime.of(13,30);
+        LocalDateTimeRange intervalle=LocalDateTimeRange.getLocalDateTimeFromLocalTime(debut,fin);
+        System.out.println("debut="+debut);
+        System.out.println("fin="+fin);
+        System.out.println("intervalle="+intervalle.getDepart() + " / "+intervalle.getFin());
+
+
+    };
+
+    void doWork8() {
+
+        List<Integer> listint = new ArrayList<Integer>();
+        listint.add(1);
+        listint.add(3);
+        listint.add(5);
+        listint.add(7);
+
+        Integer r=listint.stream().reduce((a,b)->b).orElse(null);
+        System.out.println("r="+r);
+
+    }
+
 
     /**
      * Stream operations are either intermediate or terminal. Intermediate operations return a stream so we can chain multiple intermediate operations without using semicolons.
@@ -175,20 +398,6 @@ public class Execution001 {
                 .mapToInt(Double::intValue)
                 .mapToObj(i -> "a" + i)
                 .forEach(System.out::println);
-
-        /**** Converting a Primitive 'int' Array to List ****/
-        int intArray[] = {1, 2, 3, 4, 5};
-        List<Integer> integerList1 = Arrays.stream(intArray).boxed().collect(Collectors.toList());
-        System.out.println("List #1: " + integerList1);
-
-        /**** 'IntStream.of' or 'Arrays.stream' Gives The Same Output ****/
-        List<Integer> integerList2 = IntStream.of(intArray).boxed().collect(Collectors.toList());
-        System.out.println("List #2: " + integerList2);
-
-        /**** Converting an 'Integer' Array to List ****/
-        Integer integerArray[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-        List<Integer> integerList3 = Arrays.stream(integerArray).collect(Collectors.toList());
-        System.out.println("List #3: " + integerList3);
 
     }
 
@@ -291,109 +500,10 @@ public class Execution001 {
     }
 
     void doWork7(){
-        System.out.println("doWork7 interface et Lambda");
-        System.out.println("SAM = single abstract method");
-
-        //implementation de calcul avec Lambda
-        Calcul resultat = x -> { return x*2; };
-        System.out.println("avec Lambda "+ resultat.mutlitplyByX(4));
-
-        //implementation de calcul SANS Lambda
-        class Obtenir implements Calcul {
-
-            @Override
-            public int mutlitplyByX(int x) {
-                return x*2;
-            }
-        }
-
-        System.out.println("sans Lambda "+ new Obtenir().mutlitplyByX(4));
+        System.out.println("doWork7");
 
     }
 
-    void doWork8() {
-        System.out.println("doWork8 interfaces embarquées JAVA 8 ");
-
-        Consumer<String> addThatsGreat = (a) -> System.out.println(a+" ,that's great");
-        addThatsGreat.accept("je suis un champion");
-
-        Consumer<String> addwhy = x -> System.out.println(x+" ,why ?");
-        addwhy.accept("vous avez l'heure s'il vous plait ? ");
-
-        Consumer<String> addChaud = (String x) -> System.out.println(x+" chaud chaud chaud !");
-        addChaud.accept("chaud pour un foot ? ");
-
-        Function<Integer, Boolean> isPositif = valeur -> {
-            if (valeur >= 0) {
-                return true;
-            } else {
-                return false;
-            }
-        };
-
-        int e=4;
-        System.out.println("l'entier présenté "+e+" est positif est une affirmation "+isPositif.apply(e) );
-        e=-1;
-        System.out.println("l'entier présenté "+e+" est positif est une affirmation "+isPositif.apply(e) );
-
-        Function<Integer, Integer> fois2 = x -> x*2;
-        int x=7;
-        System.out.println(x+" fois 2 est égal à "+fois2.apply(x));
-
-
-        int repetition=3;
-        String message="je suis un message";
-        Runnable r = () -> {
-            for (int i = 0; i < repetition; i++) {
-                System.out.println(message);
-            }
-        };
-        new Thread(r).start();
-
-
-        Predicate<String> contientX = s -> s.contains("X");
-        Predicate<String> possedeTailleTrois = s -> s.length() == 8;
-        Predicate<String> contientLeMotJoli = s -> s.toLowerCase().contains("joli");
-
-        System.out.println(contientX.test("X"));
-        Boolean b=contientX.and(possedeTailleTrois).and(contientLeMotJoli).test("joli XXX");
-        System.out.println("retour combinaison predicat = "+b);
-
-
-        ArrayList<String> mine = new ArrayList<>();
-        mine.add("le 1 ");
-        mine.add("le 2");
-        System.out.println("taille initiale collection = "+mine.size());
-        Consumer<Collection<String>> videLaCollection = c-> c.clear();
-        videLaCollection.accept(mine);
-        System.out.println("taille collection apres call consumer = "+mine.size());
-
-        String z="kamoulox";
-        Objects.requireNonNull(z);  //thow null pointer exception si z=null
-
-
-        Function<String,String> fi_function_trimDataIfPossible = in -> {
-            String ret=null;
-            if (in != null ) {
-                ret=in.trim();
-            }
-            return ret;
-        };
-
-        String cdRayon="   4 2    ";
-        String cdCatCode=null;
-
-        cdRayon=(null != cdRayon) ? cdRayon.trim() : cdRayon;
-        cdCatCode=(null!=cdCatCode) ? cdCatCode.trim() : cdCatCode;
-
-        //ou bien
-        cdRayon=fi_function_trimDataIfPossible.apply(cdRayon);
-        cdCatCode=fi_function_trimDataIfPossible.apply(cdCatCode);
-
-        System.out.println(cdRayon);
-        System.out.println(cdCatCode);
-
-    }
 
 
 }
