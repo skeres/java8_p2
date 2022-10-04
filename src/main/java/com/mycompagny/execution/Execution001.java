@@ -12,15 +12,30 @@ package com.mycompagny.execution;
         import java.io.*;
         import java.nio.file.Files;
         import java.nio.file.Paths;
-        import java.util.ArrayList;
-        import java.util.Arrays;
-        import java.util.List;
+        import java.util.*;
+        import java.util.function.Consumer;
+        import java.util.function.Function;
+        import java.util.function.Predicate;
         import java.util.stream.Collectors;
         import java.util.stream.IntStream;
         import java.util.stream.Stream;
 
-public class Execution001
-{
+public class Execution001 {
+
+    public class Toto {
+
+        public Toto() {
+            System.out.println("in Toto constructor");
+        }
+    }
+
+    public interface Calcul {
+        public int mutlitplyByX( int x);
+    }
+
+
+
+
     public static void main(String args[]) {
         System.out.println("hello world");
         Execution001 execution = new Execution001();
@@ -35,6 +50,7 @@ public class Execution001
         execution.doWork5();
         execution.doWork6();
         execution.doWork7();
+        execution.doWork8();
 
     }
 
@@ -134,6 +150,20 @@ public class Execution001
                 .mapToInt(Double::intValue)
                 .mapToObj(i -> "a" + i)
                 .forEach(System.out::println);
+
+        /**** Converting a Primitive 'int' Array to List ****/
+        int intArray[] = {1, 2, 3, 4, 5};
+        List<Integer> integerList1 = Arrays.stream(intArray).boxed().collect(Collectors.toList());
+        System.out.println("List #1: " + integerList1);
+
+        /**** 'IntStream.of' or 'Arrays.stream' Gives The Same Output ****/
+        List<Integer> integerList2 = IntStream.of(intArray).boxed().collect(Collectors.toList());
+        System.out.println("List #2: " + integerList2);
+
+        /**** Converting an 'Integer' Array to List ****/
+        Integer integerArray[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        List<Integer> integerList3 = Arrays.stream(integerArray).collect(Collectors.toList());
+        System.out.println("List #3: " + integerList3);
 
     }
 
@@ -236,10 +266,109 @@ public class Execution001
     }
 
     void doWork7(){
-        System.out.println("doWork7");
+        System.out.println("doWork7 interface et Lambda");
+        System.out.println("SAM = single abstract method");
+
+        //implementation de calcul avec Lambda
+        Calcul resultat = x -> { return x*2; };
+        System.out.println("avec Lambda "+ resultat.mutlitplyByX(4));
+
+        //implementation de calcul SANS Lambda
+        class Obtenir implements Calcul {
+
+            @Override
+            public int mutlitplyByX(int x) {
+                return x*2;
+            }
+        }
+
+        System.out.println("sans Lambda "+ new Obtenir().mutlitplyByX(4));
 
     }
 
+    void doWork8() {
+        System.out.println("doWork8 interfaces embarquées JAVA 8 ");
+
+        Consumer<String> addThatsGreat = (a) -> System.out.println(a+" ,that's great");
+        addThatsGreat.accept("je suis un champion");
+
+        Consumer<String> addwhy = x -> System.out.println(x+" ,why ?");
+        addwhy.accept("vous avez l'heure s'il vous plait ? ");
+
+        Consumer<String> addChaud = (String x) -> System.out.println(x+" chaud chaud chaud !");
+        addChaud.accept("chaud pour un foot ? ");
+
+        Function<Integer, Boolean> isPositif = valeur -> {
+            if (valeur >= 0) {
+                return true;
+            } else {
+                return false;
+            }
+        };
+
+        int e=4;
+        System.out.println("l'entier présenté "+e+" est positif est une affirmation "+isPositif.apply(e) );
+        e=-1;
+        System.out.println("l'entier présenté "+e+" est positif est une affirmation "+isPositif.apply(e) );
+
+        Function<Integer, Integer> fois2 = x -> x*2;
+        int x=7;
+        System.out.println(x+" fois 2 est égal à "+fois2.apply(x));
+
+
+        int repetition=3;
+        String message="je suis un message";
+        Runnable r = () -> {
+            for (int i = 0; i < repetition; i++) {
+                System.out.println(message);
+            }
+        };
+        new Thread(r).start();
+
+
+        Predicate<String> contientX = s -> s.contains("X");
+        Predicate<String> possedeTailleTrois = s -> s.length() == 8;
+        Predicate<String> contientLeMotJoli = s -> s.toLowerCase().contains("joli");
+
+        System.out.println(contientX.test("X"));
+        Boolean b=contientX.and(possedeTailleTrois).and(contientLeMotJoli).test("joli XXX");
+        System.out.println("retour combinaison predicat = "+b);
+
+
+        ArrayList<String> mine = new ArrayList<>();
+        mine.add("le 1 ");
+        mine.add("le 2");
+        System.out.println("taille initiale collection = "+mine.size());
+        Consumer<Collection<String>> videLaCollection = c-> c.clear();
+        videLaCollection.accept(mine);
+        System.out.println("taille collection apres call consumer = "+mine.size());
+
+        String z="kamoulox";
+        Objects.requireNonNull(z);  //thow null pointer exception si z=null
+
+
+        Function<String,String> fi_function_trimDataIfPossible = in -> {
+            String ret=null;
+            if (in != null ) {
+                ret=in.trim();
+            }
+            return ret;
+        };
+
+        String cdRayon="   4 2    ";
+        String cdCatCode=null;
+
+        cdRayon=(null != cdRayon) ? cdRayon.trim() : cdRayon;
+        cdCatCode=(null!=cdCatCode) ? cdCatCode.trim() : cdCatCode;
+
+        //ou bien
+        cdRayon=fi_function_trimDataIfPossible.apply(cdRayon);
+        cdCatCode=fi_function_trimDataIfPossible.apply(cdCatCode);
+
+        System.out.println(cdRayon);
+        System.out.println(cdCatCode);
+
+    }
 
 
 }
