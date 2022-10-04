@@ -51,7 +51,12 @@ public class Execution001 {
         execution.doWork6();
         execution.doWork7();
         execution.doWork8();
+        execution.doWorkBidon();
 
+    }
+
+    public void doWorkBidon(){
+        System.out.println("méthode qui ne fait rien, pour test");
     }
 
     /**
